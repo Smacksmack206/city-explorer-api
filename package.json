@@ -1,0 +1,26 @@
+{
+  "name": "city-explorer-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Smacksmack206/city-explorer-api.git"
+  },
+  "author": "Cedric Vallieu, Jacob Amsbury",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Smacksmack206/city-explorer-api/issues"
+  },
+  "homepage": "https://github.com/Smacksmack206/city-explorer-api#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "react": "^17.0.2"
+  }
+}
