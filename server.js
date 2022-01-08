@@ -42,4 +42,21 @@ app.get('/weather', (request, response) => {
 
 });
 
+class Movie {
+  constructor(movie) {
+    this.title = movie.title;
+    this.img = movie.image_url;
+  }
+}
+
+app.get('/movies', getMovies);
+async function getMovies(req, res) {
+  const searchQuery= req.query.searchQuery;
+  const url = `https://api.themoviedb.org/3/movie/76341?api_key=${process.env.api_key}&language=en-US`;
+  const movieArr = res.data.map(movie => {
+    new Movie(movie);
+  });
+  res.status(200).send(movieArr);
+}
+
 app.listen(PORT, () => console.log(`listing on port ${PORT}`));
