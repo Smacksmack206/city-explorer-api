@@ -8,6 +8,8 @@ class Forecast {
   }
 }
 
+
+
 async function getWeather(request, response) {
   try {
     const lat = request.query.lat;

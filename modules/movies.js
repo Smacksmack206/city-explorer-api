@@ -4,7 +4,8 @@ class Movie {
   constructor(movie) {
     // this.tableName = 'movies';
     this.title = movie.original_title;
-    this.img = movie.image_url;
+    // this.imgURL = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+    this.imgURL = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
     this.overview = movie.overview;
     this.averageVotes = movie.vote_average;
     this.totalVotes = movie.vote_count;
