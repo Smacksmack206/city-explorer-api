@@ -1,4 +1,5 @@
 const axios = require('axios');
+let cache = require('./cache.js');
 
 class Movie {
   constructor(movie) {
@@ -15,25 +16,38 @@ class Movie {
 
 
 async function getMovies(request, response) {
-  try {
-    console.log(request.query);
+  const key = 'movie-' + searchQuery;
+  const searchQuery = request.query.searchQuery;
+  if (cache[key] && (Date.now() - cache[key].timestamp < 50000)) {
+    console.log('movie:', 'Cache hit');
+  } else {
+    cache[key] = {};
+    cache[key].timestamp = Date.now();
+    console.log('movie:', 'Cache miss!');
     console.log(response.data);
-    const searchQuery = request.query.searchQuery;
-    let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_api_key}&query=${searchQuery}`;
+    cache[key].data = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_api_key}&query=${searchQuery}`;
     let moviesResponse = await axios({
       method: 'get',
-      url: url,
+      url: cache[key].data,
     });
-    console.log(moviesResponse.data.results);
-    const movieArr = moviesResponse.data.results.map(movie => {
-      return new Movie(movie);
-    });
-    console.log(movieArr);
-    response.status(200).send(movieArr);
-  } catch (error) {
-    response.status(503).send('Movies not found');
+    try {
+      console.log(moviesResponse.data.results);
+      const movieArr = moviesResponse.data.results.map(movie => {
+        return new Movie(movie);
+      });
+      console.log(movieArr);
+      // response.status(200).send(movieArr);
+      return Promise.resolve(movieArr);
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 }
+
+//   } catch (error) {
+//     response.status(503).send('Movies not found');
+//   }
+// }
 
 module.exports = {
   getMovies: getMovies

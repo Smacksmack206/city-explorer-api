@@ -5,7 +5,7 @@ require('dotenv').config();
 const cors = require('cors');
 const app = express();
 app.use(cors());
-
+// let cache = require('./modules/cache');
 
 
 const PORT = process.env.PORT || 3002;
