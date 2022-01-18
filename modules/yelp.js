@@ -1,37 +1,35 @@
 const axios = require('axios');
 let cache = require('./cache.js');
 
-class Forecast {
+class Restauant {
   constructor(day) {
     this.date = day.datetime;
-    this.desc = day.weather.description;
+    this.desc = day.restauant.description;
   }
 }
 
-
-
-async function getWeather(request, response) {
+async function getYelp(request, response) {
   const lat = request.query.lat;
   const lon = request.query.lon;
-  const key = 'weather-' + lat + lon;
+  const key = 'restauant-' + lat + lon;
+  const searchQuery = request.query.searchQuery;
   if (cache[key] && (Date.now() - cache[key].timestamp < 50000)) {
-    console.log('weather:', 'Cache hit');
+    console.log('restauant:', 'Cache hit');
   } else {
-    console.log('weather:', 'Cache miss!');
+    console.log('restauant:', 'Cache miss!');
     cache[key] = {};
     cache[key].timestamp = Date.now();
-    cache[key].data = await axios.get(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${process.env.WEATHER_API_KEY}&days=3`);
-
-    const weather = cache[key].data;
+    cache[key].data = await axios.get(`https://api.yelp.com/v3/businesses/search?term=${searchQuery}&latitude=${lat}&longitude=${lon}`)
+      .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`);
+    const restauant = cache[key].data;
     console.log(cache[key].data);
     console.log('query:', request.query);
     try {
-      const forcastArr = [];
-      weather.data.map(day => {
-        forcastArr.push(new Forecast(day));
+      const restauantArr = [];
+      restauant.data.map(day => {
+        restauantArr.push(new Restauant(day));
       });
-      // response.status(200).send(forcastArr);
-      return Promise.resolve(forcastArr);
+      return Promise.resolve(restauantArr);
     } catch (e) {
       return Promise.reject(e);
     }
@@ -51,5 +49,5 @@ async function getWeather(request, response) {
 
 
 module.exports = {
-  getWeather: getWeather
+  getYelp: getYelp
 };
